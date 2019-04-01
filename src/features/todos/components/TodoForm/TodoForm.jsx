@@ -17,22 +17,23 @@ import styles from './todoForm.module.scss'
 const TodoForm = ({ todoItem, onSave, className }) => {
   const [todo, setTodo] = useState(todoItem || new Todo())
 
-  const handleChange = ({ target: { name, value } }) => setTodo(new Todo({ ...todo, [name]: value }))
+  const handleChange = prop => {
+    const { target } = prop
+    if (target) {
+      const { name, value } = target
+      setTodo(new Todo({ ...todo, [name]: value }))
+    } else {
+      return value => setTodo(new Todo({ ...todo, [prop]: value }))
+    }
+  }
 
   const handleChangeImportance = value => () => setTodo(new Todo({ ...todo, importance: todo.importance ^ value }))
 
-  const handleChangeTag = tag => setTodo(new Todo({ ...todo, tag }))
+  const tagSuggestions = ["Тег0", "Тег1", "Тег2", "Тег3"]
 
   const todoFormClass = classNames(styles.wrapper, className)
 
   const { importance, statuses } = Todo
-
-  const tagSuggestions = [
-    { value: 'tag0', label: 'Тег0' },
-    { value: 'tag1', label: 'Тег1' },
-    { value: 'tag2', label: 'Тег2' },
-    { value: 'tag3', label: 'Тег3' },
-  ]
 
   return (
     <div className={todoFormClass}>
@@ -93,15 +94,15 @@ const TodoForm = ({ todoItem, onSave, className }) => {
               id: 'todo-status',
             }}
           >
-            {Object.entries(statuses).map((status, idx) => (
-              <MenuItem key={idx} value={status[0]}>
-                {status[1]}
+            {statuses.map((status, idx) => (
+              <MenuItem key={idx} value={status.value}>
+                {status.label}
               </MenuItem>
             ))}
           </Select>
         </FormControl>
         <FormControl margin="normal">
-          <Autocomplete value={todo.tag} onChange={handleChangeTag} suggestions={tagSuggestions} placeholder="Тег" />
+          <Autocomplete value={todo.tag} onChange={handleChange('tag')} suggestions={tagSuggestions} placeholder="Тег" />
         </FormControl>
       </div>
       <Button onClick={() => onSave(todo)} color="primary">

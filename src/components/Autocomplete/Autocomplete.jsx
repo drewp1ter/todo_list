@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState }  from 'react'
 import classNames from 'classnames'
 import T from 'prop-types'
 import Select from 'react-select'
@@ -6,9 +6,21 @@ import Select from 'react-select'
 import styles from './autocomplete.module.scss'
 import components from './selectComponents'
 
-const Autocomplete = ({ suggestions, value, onChange, placeholder, className }) => {
+const Autocomplete = ({ suggestions, onChange, placeholder, className }) => {
+
+  const [value, setValue] = useState(null)
 
   const rootClass = classNames(styles.root, className)
+
+  const handleChange = (value) => {
+    setValue(value)
+    onChange(value.label)
+  }
+
+  suggestions = suggestions.map(suggestion => ({
+    value: suggestion,
+    label: suggestion,
+  }))
 
   return (
     <div className={rootClass}>
@@ -17,7 +29,7 @@ const Autocomplete = ({ suggestions, value, onChange, placeholder, className }) 
         options={suggestions}
         components={components}
         value={value}
-        onChange={onChange}
+        onChange={handleChange}
         placeholder={placeholder}
         isClearable
       />
@@ -27,10 +39,7 @@ const Autocomplete = ({ suggestions, value, onChange, placeholder, className }) 
 
 Autocomplete.propTypes = {
   suggestions: T.array,
-  value: T.shape({
-    value: T.string,
-    label: T.string
-  }),
+  value: T.string,
   onChange: T.func,
   className: T.string,
   placeholder: T.string,

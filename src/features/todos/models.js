@@ -10,17 +10,22 @@ export class Todo {
   }
 
   static importance = [{ value: 0b01, label: 'Важная' }, { value: 0b10, label: 'Срочная' }]
-  static statuses = {
-    pending: 'Выполняется',
-    later: 'На потом',
-    done: 'Выполнена',
-  }
 
-  statusText = () => Todo.statuses[this.status]
+  static statuses = [
+    { value: 'pending', label: 'Выполняется' },
+    { value: 'later', label: 'На потом'},
+    { value: 'done', label: 'Выполнена'},
+  ]
+
+  statusText = () => this.status && Todo.statuses.find(status => status.value === this.status).label
 
   importanceToString = () => {
     let result = []
-    Todo.importance.forEach(item => this.importance & item.value && result.push(item.title))
+    Todo.importance.forEach(item => this.importance & item.value && result.push(item.label))
     return result.join(', ')
+  }
+
+  serialize = () => {
+    //to backend
   }
 }

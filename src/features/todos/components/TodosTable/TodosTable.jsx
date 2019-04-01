@@ -34,7 +34,7 @@ const TodosTable = ({ todos }) => (
             <TableCell>{todo.description}</TableCell>
             <TableCell>{todo.date}</TableCell>
             <TableCell>{todo.importanceToString()}</TableCell>
-            <TableCell>{todo.tag.label}</TableCell>
+            <TableCell>{todo.tag}</TableCell>
           </TableRow>
         )
       }
