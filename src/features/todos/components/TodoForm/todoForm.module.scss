@@ -1,0 +1,19 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.fields {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1;
+  padding: 0 20px;
+}
+
+.checkBoxes {
+  display: flex;
+  justify-content: space-between;
+  label:last-child {
+    margin-right: 0;
+  }
+}
