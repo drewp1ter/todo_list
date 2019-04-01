@@ -1,0 +1,42 @@
+.root {
+  flex-grow: 1;
+}
+
+.input {
+  display: flex !important;
+  padding: 0;
+}
+
+.valueContainer {
+  display: flex;
+  flex-wrap: wrap;
+  flex: 1;
+  align-items: center;
+  overflow: hidden;
+}
+
+.chip {
+  margin: 0;
+}
+
+.noOptionsMessage {
+  padding: 2px 4px
+}
+
+.singleValue {
+  font-size: 1rem !important;
+}
+
+.placeholder {
+  position: absolute;
+  left: 2px;
+  font-size: 1rem !important;
+}
+
+.paper {
+  position: absolute;
+  z-index: 1;
+  margin-top: 2px;
+  left: 0;
+  right: 0;
+}

@@ -8,7 +8,6 @@ import TableCell from '@material-ui/core/TableCell'
 //import IconButton from '@material-ui/core/IconButton'
 //import DeleteIcon from '@material-ui/icons/Delete'
 
-import { Todo } from '../../models'
 import styles from './todosTable.module.scss'
 
 const TodosTable = ({ todos }) => (
@@ -30,12 +29,12 @@ const TodosTable = ({ todos }) => (
         todos && todos.map((todo, idx) =>
           <TableRow key={idx}>
             <TableCell>{todo.id}</TableCell>
-            <TableCell>{Todo.statuses[todo.status]}</TableCell>
+            <TableCell>{todo.statusText()}</TableCell>
             <TableCell>{todo.title}</TableCell>
             <TableCell>{todo.description}</TableCell>
             <TableCell>{todo.date}</TableCell>
-            <TableCell>{todo.getImportance}</TableCell>
-            <TableCell>{todo.tag}</TableCell>
+            <TableCell>{todo.importanceToString()}</TableCell>
+            <TableCell>{todo.tag.label}</TableCell>
           </TableRow>
         )
       }

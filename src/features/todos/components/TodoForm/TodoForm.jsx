@@ -10,25 +10,32 @@ import Select from '@material-ui/core/Select'
 import InputLabel from '@material-ui/core/InputLabel'
 import MenuItem from '@material-ui/core/MenuItem'
 
-import { Header } from 'components'
+import { Header, Autocomplete } from 'components'
 import { Todo } from '../../models'
 import styles from './todoForm.module.scss'
 
 const TodoForm = ({ todoItem, onSave, className }) => {
   const [todo, setTodo] = useState(todoItem || new Todo())
 
-  const handleChange = ({ target: { name, value } }) => setTodo({ ...todo, [name]: value })
+  const handleChange = ({ target: { name, value } }) => setTodo(new Todo({ ...todo, [name]: value }))
 
-  const handleChangeImportance = value => () => setTodo({ ...todo, importance: todo.importance ^ value })
+  const handleChangeImportance = value => () => setTodo(new Todo({ ...todo, importance: todo.importance ^ value }))
 
-  const addTodoClass = classNames(styles.wrapper, className)
+  const handleChangeTag = tag => setTodo(new Todo({ ...todo, tag }))
 
-  const { important, urgent, statuses } = Todo
+  const todoFormClass = classNames(styles.wrapper, className)
 
-  console.log(todo.getImportance)
+  const { importance, statuses } = Todo
+
+  const tagSuggestions = [
+    { value: 'tag0', label: 'Тег0' },
+    { value: 'tag1', label: 'Тег1' },
+    { value: 'tag2', label: 'Тег2' },
+    { value: 'tag3', label: 'Тег3' },
+  ]
 
   return (
-    <div className={addTodoClass}>
+    <div className={todoFormClass}>
       <Header title="Новая задача" />
       <div className={styles.fields}>
         <TextField required onChange={handleChange} value={todo.title} label="Название" name="title" margin="normal" />
@@ -57,22 +64,22 @@ const TodoForm = ({ todoItem, onSave, className }) => {
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={!!(todo.importance & urgent)}
-                  onChange={handleChangeImportance(urgent)}
+                  checked={!!(todo.importance & importance[0].value)}
+                  onChange={handleChangeImportance(importance[0].value)}
                   color="primary"
                 />
               }
-              label="Срочная"
+              label={importance[0].label}
             />
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={!!(todo.importance & important)}
-                  onChange={handleChangeImportance(important)}
+                  checked={!!(todo.importance & importance[1].value)}
+                  onChange={handleChangeImportance(importance[1].value)}
                   color="primary"
                 />
               }
-              label="Важная"
+              label={importance[1].label}
             />
           </div>
         )}
@@ -92,6 +99,9 @@ const TodoForm = ({ todoItem, onSave, className }) => {
               </MenuItem>
             ))}
           </Select>
+        </FormControl>
+        <FormControl margin="normal">
+          <Autocomplete value={todo.tag} onChange={handleChangeTag} suggestions={tagSuggestions} placeholder="Тег" />
         </FormControl>
       </div>
       <Button onClick={() => onSave(todo)} color="primary">
