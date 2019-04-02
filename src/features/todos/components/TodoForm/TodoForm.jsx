@@ -18,7 +18,7 @@ import styles from './todoForm.module.scss'
 class TodoForm extends Component {
   constructor(props, context) {
     super(props)
-    const { todos } = context
+    const { todos } = context.state
     const { editTodoIdx } = props
     this.state = {
       todo: editTodoIdx >= 0 ? todos[editTodoIdx] : new Todo(),
@@ -47,20 +47,26 @@ class TodoForm extends Component {
 
   handleSubmit = () => {
     const { todo } = this.state
-    const { todos, setTodos } = this.context
+    const {
+      state: { todos },
+      dispatch,
+    } = this.context
     const { editTodoIdx, toggleDrawer } = this.props
     if (!todo.isValid()) {
       Snackbar.open('Заполнитье все необходимые поля!')
       return
     }
-    if (editTodoIdx >= 0) {
-      todos[editTodoIdx] = todo
-      setTodos([...todos])
-    } else {
-      setTodos([...todos, todo])
-    }
-    toggleDrawer(false)
-    Snackbar.open('')
+    dispatch({ type: 'loading' })
+    setTimeout(() => {
+      if (editTodoIdx >= 0) {
+        todos[editTodoIdx] = todo
+        dispatch({ type: 'update', payload: todos })
+      } else {
+        dispatch({ type: 'add', payload: todo })
+      }
+      toggleDrawer(false)
+      Snackbar.open('')
+    }, 2000)
   }
 
   render = () => {
@@ -178,9 +184,8 @@ class TodoForm extends Component {
 TodoForm.contextType = TodosContext
 
 TodoForm.propTypes = {
-  todoItem: T.object,
-  onSave: T.func,
-  onCancel: T.func,
+  editTodoIdx: T.number,
+  toggleDrawer: T.func,
   className: T.string,
 }
 

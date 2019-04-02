@@ -28,23 +28,23 @@ class TodosTable extends Component {
   }
 
   handleStatusChange = e => {
-    const { todos, setTodos } = this.context
+    const { state: { todos }, dispatch } = this.context
     const { value, idx } = e.currentTarget.dataset
     todos[idx].status = value
-    setTodos([...todos])
+    dispatch({type: 'update', payload: todos})
     this.setState({ anchorEl: null })
   }
 
   handleDeleteTodo = idx => () => {
-    const { todos, setTodos } = this.context
+    const { dispatch } = this.context
     if (!window.confirm('Вы уверены?')) return
-    todos.splice(idx, 1)
-    setTodos([...todos])
+    dispatch({type: 'loading'})
+    setTimeout(() => dispatch({type: 'delete', payload: idx}), 2000)
   }
 
   render = () => {
     const { handleTodoEdit } = this.props
-    const { todos } = this.context
+    const { state: { todos } } = this.context
     const { anchorEl } = this.state
     const { statuses } = Todo
     const open = Boolean(anchorEl)
