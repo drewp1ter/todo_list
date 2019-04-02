@@ -1,4 +1,4 @@
-import React, { useState }  from 'react'
+import React, { useState } from 'react'
 import classNames from 'classnames'
 import T from 'prop-types'
 import Select from 'react-select'
@@ -7,12 +7,9 @@ import styles from './autocomplete.module.scss'
 import components from './selectComponents'
 
 const Autocomplete = ({ suggestions, onChange, placeholder, className }) => {
-
   const [value, setValue] = useState(null)
-
   const rootClass = classNames(styles.root, className)
-
-  const handleChange = (value) => {
+  const handleChange = value => {
     setValue(value)
     onChange(value.label)
   }

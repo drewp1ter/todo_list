@@ -14,9 +14,12 @@ import { Header, Autocomplete } from 'components'
 import { Todo } from '../../models'
 import styles from './todoForm.module.scss'
 
-const TodoForm = ({ todoItem, onSave, className }) => {
+const TodoForm = ({ todoItem, onSave, onCancel, className }) => {
   const [todo, setTodo] = useState(todoItem || new Todo())
-
+  const tagSuggestions = ['Тег0', 'Тег1', 'Тег2', 'Тег3']
+  const todoFormClass = classNames(styles.wrapper, className)
+  const { importance, statuses } = Todo
+  const handleChangeImportance = value => () => setTodo(new Todo({ ...todo, importance: todo.importance ^ value }))
   const handleChange = prop => {
     const { target } = prop
     if (target) {
@@ -26,14 +29,6 @@ const TodoForm = ({ todoItem, onSave, className }) => {
       return value => setTodo(new Todo({ ...todo, [prop]: value }))
     }
   }
-
-  const handleChangeImportance = value => () => setTodo(new Todo({ ...todo, importance: todo.importance ^ value }))
-
-  const tagSuggestions = ["Тег0", "Тег1", "Тег2", "Тег3"]
-
-  const todoFormClass = classNames(styles.wrapper, className)
-
-  const { importance, statuses } = Todo
 
   return (
     <div className={todoFormClass}>
@@ -49,7 +44,6 @@ const TodoForm = ({ todoItem, onSave, className }) => {
           margin="normal"
         />
         <TextField
-          required
           type="date"
           onChange={handleChange}
           value={todo.date}
@@ -102,18 +96,23 @@ const TodoForm = ({ todoItem, onSave, className }) => {
           </Select>
         </FormControl>
         <FormControl margin="normal">
-          <Autocomplete value={todo.tag} onChange={handleChange('tag')} suggestions={tagSuggestions} placeholder="Тег" />
+          <Autocomplete onChange={handleChange('tag')} suggestions={tagSuggestions} placeholder="Тег" />
         </FormControl>
       </div>
       <Button onClick={() => onSave(todo)} color="primary">
         Добавить задачу
+      </Button>
+      <Button onClick={onCancel} color="primary">
+        Отмена
       </Button>
     </div>
   )
 }
 
 TodoForm.propTypes = {
+  todoItem: T.object,
   onSave: T.func,
+  onCancel: T.func,
   className: T.string,
 }
 

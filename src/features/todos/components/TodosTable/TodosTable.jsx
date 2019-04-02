@@ -10,7 +10,7 @@ import TableCell from '@material-ui/core/TableCell'
 
 import styles from './todosTable.module.scss'
 
-const TodosTable = ({ todos }) => (
+const TodosTable = ({ todos, onTodoEdit }) => (
   <Table>
     <TableHead>
       <TableRow>
@@ -25,8 +25,8 @@ const TodosTable = ({ todos }) => (
       </TableRow>
     </TableHead>
     <TableBody>
-      {
-        todos && todos.map((todo, idx) =>
+      {todos &&
+        todos.map((todo, idx) => (
           <TableRow key={idx}>
             <TableCell>{todo.id}</TableCell>
             <TableCell>{todo.statusText()}</TableCell>
@@ -35,9 +35,11 @@ const TodosTable = ({ todos }) => (
             <TableCell>{todo.date}</TableCell>
             <TableCell>{todo.importanceToString()}</TableCell>
             <TableCell>{todo.tag}</TableCell>
+            <TableCell>
+              <button onClick={onTodoEdit(idx)}>edit</button>
+            </TableCell>
           </TableRow>
-        )
-      }
+        ))}
     </TableBody>
   </Table>
 )
