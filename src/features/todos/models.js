@@ -25,6 +25,8 @@ export class Todo {
     return result.join(', ')
   }
 
+  isValid = () => this.title !== ''
+
   serialize = () => {
     //to backend
   }
