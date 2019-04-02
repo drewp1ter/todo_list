@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { Component } from 'react'
 import classNames from 'classnames'
 import T from 'prop-types'
 import TextField from '@material-ui/core/TextField'
@@ -10,104 +10,149 @@ import Select from '@material-ui/core/Select'
 import InputLabel from '@material-ui/core/InputLabel'
 import MenuItem from '@material-ui/core/MenuItem'
 
-import { Header, Autocomplete } from 'components'
+import { Header, Autocomplete, Snackbar } from 'components'
 import { Todo } from '../../models'
+import TodosContext from '../../todosContext'
 import styles from './todoForm.module.scss'
 
-const TodoForm = ({ todoItem, onSave, onCancel, className }) => {
-  const [todo, setTodo] = useState(todoItem || new Todo())
-  const tagSuggestions = ['Тег0', 'Тег1', 'Тег2', 'Тег3']
-  const todoFormClass = classNames(styles.wrapper, className)
-  const { importance, statuses } = Todo
-  const handleChangeImportance = value => () => setTodo(new Todo({ ...todo, importance: todo.importance ^ value }))
-  const handleChange = prop => {
-    const { target } = prop
-    if (target) {
-      const { name, value } = target
-      setTodo(new Todo({ ...todo, [name]: value }))
-    } else {
-      return value => setTodo(new Todo({ ...todo, [prop]: value }))
+class TodoForm extends Component {
+  constructor(props, context) {
+    super(props)
+    const { todos } = context
+    const { editTodoIdx } = props
+    this.state = {
+      todo: editTodoIdx >= 0 ? todos[editTodoIdx] : new Todo(),
+      snackbarMsg: ''
     }
   }
 
-  return (
-    <div className={todoFormClass}>
-      <Header title="Новая задача" />
-      <div className={styles.fields}>
-        <TextField required onChange={handleChange} value={todo.title} label="Название" name="title" margin="normal" />
-        <TextField
-          multiline
-          onChange={handleChange}
-          value={todo.description}
-          label="Описание"
-          name="description"
-          margin="normal"
-        />
-        <TextField
-          type="date"
-          onChange={handleChange}
-          value={todo.date}
-          label="Дата выполнения"
-          name="date"
-          margin="normal"
-          InputLabelProps={{
-            shrink: true,
-          }}
-        />
-        {todo.date && (
-          <div className={styles.checkBoxes}>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={!!(todo.importance & importance[0].value)}
-                  onChange={handleChangeImportance(importance[0].value)}
-                  color="primary"
-                />
-              }
-              label={importance[0].label}
-            />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={!!(todo.importance & importance[1].value)}
-                  onChange={handleChangeImportance(importance[1].value)}
-                  color="primary"
-                />
-              }
-              label={importance[1].label}
-            />
-          </div>
-        )}
-        <FormControl margin="normal">
-          <InputLabel htmlFor="todo-status">Статус</InputLabel>
-          <Select
-            value={todo.status}
-            onChange={handleChange}
-            inputProps={{
-              name: 'status',
-              id: 'todo-status',
+  handleChangeImportance = value => () =>
+    this.setState(({ todo }) => ({
+      todo: new Todo({ ...todo, importance: todo.importance ^ value }),
+    }))
+
+  handleChange = prop => {
+    const { target } = prop
+    if (target) {
+      const { name, value } = target
+      this.setState(({ todo }) => ({
+        todo: new Todo({ ...todo, [name]: value }),
+      }))
+    } else {
+      return value =>
+        this.setState(({ todo }) => ({
+          todo: new Todo({ ...todo, [prop]: value }),
+        }))
+    }
+  }
+
+  handleSubmit = () => {
+    const { todo } = this.state
+    const { todos, setTodos } = this.context
+    const { editTodoIdx, toggleDrawer } = this.props
+    if (!todo.isValid()) {
+      this.setState({ snackbarMsg: 'Заполнитье все необходимые поля!' })
+      return
+    }
+    if (editTodoIdx >= 0) {
+      todos[editTodoIdx] = todo
+      setTodos([...todos])
+    } else {
+      setTodos([...todos, todo])
+    }
+    toggleDrawer(false)
+    this.setState({ msg: '' })
+  }
+
+  render = () => {
+    const { toggleDrawer, className } = this.props
+    const { todo, snackbarMsg } = this.state
+    const { importance, statuses } = Todo
+    const todoFormClass = classNames(styles.wrapper, className)
+    return (
+      <>
+      <Snackbar msg={snackbarMsg} onClickUndo={() => toggleDrawer(false)} />
+      <div className={todoFormClass}>
+        <Header title="Новая задача" />
+        <div className={styles.fields}>
+          <TextField required onChange={this.handleChange} value={todo.title} label="Название" name="title" margin="normal" />
+          <TextField
+            multiline
+            onChange={this.handleChange}
+            value={todo.description}
+            label="Описание"
+            name="description"
+            margin="normal"
+          />
+          <TextField
+            type="date"
+            onChange={this.handleChange}
+            value={todo.date}
+            label="Дата выполнения"
+            name="date"
+            margin="normal"
+            InputLabelProps={{
+              shrink: true,
             }}
-          >
-            {statuses.map((status, idx) => (
-              <MenuItem key={idx} value={status.value}>
-                {status.label}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        <FormControl margin="normal">
-          <Autocomplete onChange={handleChange('tag')} suggestions={tagSuggestions} placeholder="Тег" />
-        </FormControl>
+          />
+          {todo.date && (
+            <div className={styles.checkBoxes}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={!!(todo.importance & importance[0].value)}
+                    onChange={this.handleChangeImportance(importance[0].value)}
+                    color="primary"
+                  />
+                }
+                label={importance[0].label}
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={!!(todo.importance & importance[1].value)}
+                    onChange={this.handleChangeImportance(importance[1].value)}
+                    color="primary"
+                  />
+                }
+                label={importance[1].label}
+              />
+            </div>
+          )}
+          <FormControl margin="normal">
+            <InputLabel htmlFor="todo-status">Статус</InputLabel>
+            <Select
+              value={todo.status}
+              onChange={this.handleChange}
+              inputProps={{
+                name: 'status',
+                id: 'todo-status',
+              }}
+            >
+              {statuses.map((status, idx) => (
+                <MenuItem key={idx} value={status.value}>
+                  {status.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <FormControl margin="normal">
+            <Autocomplete onChange={this.handleChange('tag')} suggestions={['Тег0', 'Тег1', 'Тег2', 'Тег3']} placeholder="Тег" />
+          </FormControl>
+        </div>
+        <Button onClick={this.handleSubmit} color="primary">
+          Добавить задачу
+        </Button>
+        <Button onClick={() => toggleDrawer(false)} color="primary">
+          Отмена
+        </Button>
       </div>
-      <Button onClick={() => onSave(todo)} color="primary">
-        Добавить задачу
-      </Button>
-      <Button onClick={onCancel} color="primary">
-        Отмена
-      </Button>
-    </div>
-  )
+      </>
+    )
+  }
 }
+
+TodoForm.contextType = TodosContext
 
 TodoForm.propTypes = {
   todoItem: T.object,
