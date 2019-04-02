@@ -15,11 +15,26 @@
 .checkBoxes {
   display: flex;
   justify-content: space-between;
+  min-height: 70px;
   label:last-child {
     margin-right: 0;
   }
 }
 
+.input {
+  width: 100%;
+}
+
+.check {
+  min-height: 70px;
+}
+
 .field {
-  min-height: 50px;
+  display: flex;
+  width: 100%;
+  min-height: 70px;
+  i {
+    margin-top: 20px;
+    margin-right: 10px;
+  }
 }

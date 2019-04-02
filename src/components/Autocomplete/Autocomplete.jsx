@@ -6,8 +6,8 @@ import Select from 'react-select'
 import styles from './autocomplete.module.scss'
 import components from './selectComponents'
 
-const Autocomplete = ({ suggestions, onChange, placeholder, className }) => {
-  const [value, setValue] = useState(null)
+const Autocomplete = ({ value, suggestions, onChange, placeholder, className }) => {
+  const [val, setValue] = useState({ value, label: value })
   const rootClass = classNames(styles.root, className)
   const handleChange = value => {
     setValue(value)
@@ -25,7 +25,7 @@ const Autocomplete = ({ suggestions, onChange, placeholder, className }) => {
         classes={styles}
         options={suggestions}
         components={components}
-        value={value}
+        value={val}
         onChange={handleChange}
         placeholder={placeholder}
         isClearable

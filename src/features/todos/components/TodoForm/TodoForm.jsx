@@ -64,7 +64,7 @@ class TodoForm extends Component {
   }
 
   render = () => {
-    const { toggleDrawer, className } = this.props
+    const { toggleDrawer, className, editTodoIdx } = this.props
     const { todo } = this.state
     const { importance, statuses } = Todo
     const todoFormClass = classNames(styles.wrapper, className)
@@ -72,40 +72,46 @@ class TodoForm extends Component {
       <div className={todoFormClass}>
         <Header title="Новая задача" />
         <div className={styles.fields}>
-          <TextField
-            className={styles.field}
-            onChange={this.handleChange}
-            value={todo.title}
-            label="Название"
-            name="title"
-            margin="normal"
-            required
-          />
-          <TextField
-            className={styles.field}
-            onChange={this.handleChange}
-            value={todo.description}
-            label="Описание"
-            name="description"
-            margin="normal"
-            multiline
-          />
-          <TextField
-            className={styles.field}
-            type="date"
-            onChange={this.handleChange}
-            value={todo.date}
-            label="Дата выполнения"
-            name="date"
-            margin="normal"
-            InputLabelProps={{
-              shrink: true,
-            }}
-          />
+          <div className={styles.field}>
+            <i className="material-icons">label</i>
+            <TextField
+              className={styles.input}
+              onChange={this.handleChange}
+              value={todo.title}
+              label="Название"
+              name="title"
+              required
+            />
+          </div>
+          <div className={styles.field}>
+            <i className="material-icons">comment</i>
+            <TextField
+              className={styles.input}
+              onChange={this.handleChange}
+              value={todo.description}
+              label="Описание"
+              name="description"
+              multiline
+            />
+          </div>
+          <div className={styles.field}>
+            <i className="material-icons">event</i>
+            <TextField
+              type="date"
+              className={styles.input}
+              onChange={this.handleChange}
+              value={todo.date}
+              label="Дата выполнения"
+              name="date"
+              InputLabelProps={{
+                shrink: true,
+              }}
+            />
+          </div>
           {todo.date && (
             <div className={styles.checkBoxes}>
               <FormControlLabel
-                className={styles.field}
+                className={styles.check}
                 control={
                   <Checkbox
                     checked={!!(todo.importance & importance[0].value)}
@@ -116,7 +122,7 @@ class TodoForm extends Component {
                 label={importance[0].label}
               />
               <FormControlLabel
-                className={styles.field}
+                className={styles.check}
                 control={
                   <Checkbox
                     checked={!!(todo.importance & importance[1].value)}
@@ -128,29 +134,38 @@ class TodoForm extends Component {
               />
             </div>
           )}
-          <FormControl className={styles.field} margin="normal">
-            <InputLabel htmlFor="todo-status">Статус</InputLabel>
-            <Select
-              value={todo.status}
-              onChange={this.handleChange}
-              inputProps={{
-                name: 'status',
-                id: 'todo-status',
-              }}
-            >
-              {statuses.map((status, idx) => (
-                <MenuItem key={idx} value={status.value}>
-                  {status.label}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <FormControl className={styles.field} margin="normal">
-            <Autocomplete onChange={this.handleChange('tag')} suggestions={['Тег0', 'Тег1', 'Тег2', 'Тег3']} placeholder="Тег" />
-          </FormControl>
+          <div className={styles.field}>
+            <i className="material-icons">event</i>
+            <FormControl className={styles.field}>
+              <InputLabel htmlFor="todo-status">Статус</InputLabel>
+              <Select
+                value={todo.status}
+                onChange={this.handleChange}
+                inputProps={{
+                  name: 'status',
+                  id: 'todo-status',
+                }}
+              >
+                {statuses.map((status, idx) => (
+                  <MenuItem key={idx} value={status.value}>
+                    {status.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </div>
+          <div className={styles.field}>
+            <i className="material-icons">weekend</i>
+            <Autocomplete
+              value={todo.tag}
+              onChange={this.handleChange('tag')}
+              suggestions={['Тег0', 'Тег1', 'Тег2', 'Тег3']}
+              placeholder="Тег"
+            />
+          </div>
         </div>
         <Button onClick={this.handleSubmit} color="primary">
-          Добавить задачу
+          {editTodoIdx >= 0 ? 'Сохранить задачу' : 'Добавить задачу'}
         </Button>
         <Button onClick={() => toggleDrawer(true)} color="primary">
           Отмена
