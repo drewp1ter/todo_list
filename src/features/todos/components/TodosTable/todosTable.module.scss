@@ -2,3 +2,17 @@
   background: #444;
   color: white !important;
 }
+
+.row {
+  .actions {
+    opacity: 0;
+  }
+  &:nth-of-type(odd) {
+    background: #fafafa,
+  }
+  &:hover {
+    .actions {
+      opacity: 1;
+    }
+  }
+}

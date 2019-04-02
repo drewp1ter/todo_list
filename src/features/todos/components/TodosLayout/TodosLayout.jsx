@@ -9,17 +9,16 @@ import TodosContext from '../../todosContext'
 
 const TodosLayout = () => {
   const [drawerOpen, setDrawerOpen] = useState(false)
-  const [snackbarMsg, setSnackbarMsg] = useState('')
   const [todos, setTodos] = useState([])
   const [editTodoIdx, setEditTodoIdx] = useState(-1)
 
   const toggleDrawer = event => {
     if (drawerOpen && event) {
-      setSnackbarMsg('Данные не сохранены!')
+      Snackbar.open('Данные не сохранены!', () => toggleDrawer(false))
       return
     }
     setEditTodoIdx(-1)
-    setSnackbarMsg('')
+    Snackbar.open('')
     setDrawerOpen(!drawerOpen)
   }
 
@@ -35,11 +34,10 @@ const TodosLayout = () => {
         <Button onClick={toggleDrawer} color="primary">
           Добавить задачу
         </Button>
-        <TodosTable onTodoEdit={handleTodoEdit} todos={todos} />
+        <TodosTable handleTodoEdit={handleTodoEdit} todos={todos} />
         <Drawer className={styles.drawer} open={drawerOpen} onClose={toggleDrawer}>
           <TodoForm toggleDrawer={toggleDrawer} editTodoIdx={editTodoIdx} className={styles.addTodo} />
         </Drawer>
-        <Snackbar msg={snackbarMsg} onClickUndo={() => toggleDrawer(false)} />
       </div>
     </TodosContext.Provider>
   )

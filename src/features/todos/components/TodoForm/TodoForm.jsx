@@ -22,7 +22,6 @@ class TodoForm extends Component {
     const { editTodoIdx } = props
     this.state = {
       todo: editTodoIdx >= 0 ? todos[editTodoIdx] : new Todo(),
-      snackbarMsg: ''
     }
   }
 
@@ -51,7 +50,7 @@ class TodoForm extends Component {
     const { todos, setTodos } = this.context
     const { editTodoIdx, toggleDrawer } = this.props
     if (!todo.isValid()) {
-      this.setState({ snackbarMsg: 'Заполнитье все необходимые поля!' })
+      Snackbar.open('Заполнитье все необходимые поля!')
       return
     }
     if (editTodoIdx >= 0) {
@@ -61,17 +60,15 @@ class TodoForm extends Component {
       setTodos([...todos, todo])
     }
     toggleDrawer(false)
-    this.setState({ msg: '' })
+    Snackbar.open('')
   }
 
   render = () => {
     const { toggleDrawer, className } = this.props
-    const { todo, snackbarMsg } = this.state
+    const { todo } = this.state
     const { importance, statuses } = Todo
     const todoFormClass = classNames(styles.wrapper, className)
     return (
-      <>
-      <Snackbar msg={snackbarMsg} onClickUndo={() => toggleDrawer(false)} />
       <div className={todoFormClass}>
         <Header title="Новая задача" />
         <div className={styles.fields}>
@@ -147,7 +144,6 @@ class TodoForm extends Component {
           Отмена
         </Button>
       </div>
-      </>
     )
   }
 }
