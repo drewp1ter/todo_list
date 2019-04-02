@@ -11,7 +11,7 @@ const Autocomplete = ({ value, suggestions, onChange, placeholder, className }) 
   const rootClass = classNames(styles.root, className)
   const handleChange = value => {
     setValue(value)
-    onChange(value.label)
+    value && onChange(value.label)
   }
 
   suggestions = suggestions.map(suggestion => ({
