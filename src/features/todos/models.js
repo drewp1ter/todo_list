@@ -5,7 +5,7 @@ export class Todo {
     this.description = props.description || ''
     this.date = props.date || ''
     this.importance = props.importance || 0
-    this.status = props.status || ''
+    this.status = props.status || Todo.statuses[0].value
     this.tag = props.tag || ''
   }
 

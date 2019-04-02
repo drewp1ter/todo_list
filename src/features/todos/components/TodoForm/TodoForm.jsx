@@ -72,16 +72,26 @@ class TodoForm extends Component {
       <div className={todoFormClass}>
         <Header title="Новая задача" />
         <div className={styles.fields}>
-          <TextField required onChange={this.handleChange} value={todo.title} label="Название" name="title" margin="normal" />
           <TextField
-            multiline
+            className={styles.field}
+            onChange={this.handleChange}
+            value={todo.title}
+            label="Название"
+            name="title"
+            margin="normal"
+            required
+          />
+          <TextField
+            className={styles.field}
             onChange={this.handleChange}
             value={todo.description}
             label="Описание"
             name="description"
             margin="normal"
+            multiline
           />
           <TextField
+            className={styles.field}
             type="date"
             onChange={this.handleChange}
             value={todo.date}
@@ -95,6 +105,7 @@ class TodoForm extends Component {
           {todo.date && (
             <div className={styles.checkBoxes}>
               <FormControlLabel
+                className={styles.field}
                 control={
                   <Checkbox
                     checked={!!(todo.importance & importance[0].value)}
@@ -105,6 +116,7 @@ class TodoForm extends Component {
                 label={importance[0].label}
               />
               <FormControlLabel
+                className={styles.field}
                 control={
                   <Checkbox
                     checked={!!(todo.importance & importance[1].value)}
@@ -116,7 +128,7 @@ class TodoForm extends Component {
               />
             </div>
           )}
-          <FormControl margin="normal">
+          <FormControl className={styles.field} margin="normal">
             <InputLabel htmlFor="todo-status">Статус</InputLabel>
             <Select
               value={todo.status}
@@ -133,14 +145,14 @@ class TodoForm extends Component {
               ))}
             </Select>
           </FormControl>
-          <FormControl margin="normal">
+          <FormControl className={styles.field} margin="normal">
             <Autocomplete onChange={this.handleChange('tag')} suggestions={['Тег0', 'Тег1', 'Тег2', 'Тег3']} placeholder="Тег" />
           </FormControl>
         </div>
         <Button onClick={this.handleSubmit} color="primary">
           Добавить задачу
         </Button>
-        <Button onClick={() => toggleDrawer(false)} color="primary">
+        <Button onClick={() => toggleDrawer(true)} color="primary">
           Отмена
         </Button>
       </div>
