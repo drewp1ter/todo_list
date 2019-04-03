@@ -6,7 +6,6 @@ services:
 - docker
 before_install:
 - openssl aes-256-cbc -K $encrypted_ac9e23b4152d_key -iv $encrypted_ac9e23b4152d_iv -in deploy_rsa.enc -out deploy_rsa -d
-- openssl aes-256-cbc -K $encrypted_d068ddbe1a72_key -iv $encrypted_d068ddbe1a72_iv -in deploy_rsa.enc -out /tmp/deploy_rsa -d
 - eval "$(ssh-agent -s)"
 - chmod 600 /tmp/deploy_rsa
 - ssh-add /tmp/deploy_rsa
